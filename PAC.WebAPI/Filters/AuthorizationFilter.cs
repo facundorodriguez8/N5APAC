@@ -8,7 +8,16 @@ namespace PAC.WebAPI.Filters
     {
         public virtual void OnAuthorization(AuthorizationFilterContext context)
         {
-            var authorizationHeader = context.HttpContext.Request.Headers[""].ToString();
+            var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].ToString();
+
+            if (string.IsNullOrEmpty(authorizationHeader))
+            {
+                // Si asigno un result se corta la ejecucion de la request y ya devuelve la response
+                context.Result = new ObjectResult(new { Message = "Authorization header is missing" })
+                {
+                    StatusCode = 401
+                };
+            }
         }
 
     }
